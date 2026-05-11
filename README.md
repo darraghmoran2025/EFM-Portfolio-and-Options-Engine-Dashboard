@@ -11,7 +11,7 @@ Standalone dashboard for Darragh Moran's EC362 Economics of Financial Markets fi
 
 ## Project Structure
 
-- `index.html`, `app.js`, `styles.css`, `assets/`: static Vercel deployment files.
+- `index.html`, `client.js`, `styles.css`, `assets/`: static Vercel deployment files.
 - `static/`: source copy of the browser dashboard.
 - `server.mjs`: local development server with the `/api/market-data` route.
 - `scripts/build-static.mjs`: optional local build script that copies `static/` to `dist/`.
