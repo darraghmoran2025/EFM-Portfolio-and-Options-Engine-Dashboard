@@ -11,17 +11,14 @@ Standalone dashboard for Darragh Moran's EC362 Economics of Financial Markets fi
 
 ## Project Structure
 
-- `static/`: browser dashboard.
-- `server.mjs`: local development server with the same `/api/market-data` route.
-- `scripts/build-static.mjs`: copies `static/` to `dist/`.
+- `index.html`, `app.js`, `styles.css`, `assets/`: static Vercel deployment files.
+- `static/`: source copy of the browser dashboard.
+- `server.mjs`: local development server with the `/api/market-data` route.
+- `scripts/build-static.mjs`: optional local build script that copies `static/` to `dist/`.
 
 ## Run / Build
 
-```powershell
-npm run build
-```
-
-The static build is written to `dist/`.
+Vercel serves the root-level static files directly. No build command or serverless function is required for deployment.
 
 For a backend-enabled local preview:
 
