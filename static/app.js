@@ -1,6 +1,7 @@
 const CAPITAL = 5_000_000;
 const SNAPSHOT_START = "2026-01-02";
 const SNAPSHOT_END = "2026-04-17";
+const MARKET_DATA_ENABLED = ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
 const ETFS = [
   { ticker: "VWRL", yahoo: "VWRL.AS", name: "Vanguard FTSE All-World UCITS ETF", bucket: "Core", type: "Broad global equity", ter: 0.0022, allocation: 0.35, geography: "Global - 49 countries", pe: 17.8, stdev: 0.128, fallbackReturn: 0.045, notes: "Single-fund access to developed and emerging market equities." },
@@ -381,13 +382,20 @@ function renderPortfolio() {
   renderPortfolioMetrics();
   $("snapshotStatus").textContent = snapshotRows.some((row) => row.source === "Yahoo Finance")
     ? `Historical prices loaded from Yahoo Finance for ${SNAPSHOT_START} to ${SNAPSHOT_END}.`
-    : `Using embedded YTD 17 Apr 2026 returns until the market-data API is available. Weighted TER: ${fmtPct(weightedTer())}.`;
+    : MARKET_DATA_ENABLED
+      ? `Using embedded YTD 17 Apr 2026 returns until the market-data API is available. Weighted TER: ${fmtPct(weightedTer())}.`
+      : `Using fixed Q2 workbook snapshot for YTD performance to 17 Apr 2026. Weighted TER: ${fmtPct(weightedTer())}.`;
   renderPortfolioCharts();
   renderHoldingsTable();
   renderRiskNotes();
 }
 
 async function fetchSnapshot() {
+  if (!MARKET_DATA_ENABLED) {
+    $("snapshotStatus").textContent = "Hosted deployment uses the fixed Q2 workbook snapshot. Run locally for Yahoo Finance refresh.";
+    renderPortfolio();
+    return;
+  }
   $("snapshotStatus").textContent = "Refreshing historical ETF prices...";
   try {
     const symbols = ETFS.map((row) => row.yahoo).join(",");
@@ -506,6 +514,15 @@ function renderPayoff(strategy) {
 }
 
 async function fetchLiveQuotes() {
+  if (!MARKET_DATA_ENABLED) {
+    liveState = {
+      loading: false,
+      error: "Live Yahoo Finance refresh is disabled on the static Vercel deployment. Run npm run dev locally to use Live Mode.",
+      fetchedAt: null,
+    };
+    renderLiveMode();
+    return;
+  }
   liveState = { ...liveState, loading: true, error: "" };
   renderLiveMode();
   try {
@@ -590,6 +607,10 @@ function wireEvents() {
   $("refreshSnapshot").addEventListener("click", fetchSnapshot);
   $("refreshLiveQuotes").addEventListener("click", fetchLiveQuotes);
   $("strategySelect").addEventListener("change", renderOptions);
+  if (!MARKET_DATA_ENABLED) {
+    $("refreshSnapshot").textContent = "Static Snapshot";
+    $("refreshLiveQuotes").textContent = "Local Only";
+  }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -598,5 +619,5 @@ window.addEventListener("DOMContentLoaded", () => {
   renderPortfolio();
   renderOptions();
   renderLiveMode();
-  fetchSnapshot();
+  if (MARKET_DATA_ENABLED) fetchSnapshot();
 });
