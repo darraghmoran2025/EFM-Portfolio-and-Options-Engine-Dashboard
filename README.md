@@ -12,10 +12,11 @@ Standalone dashboard for Darragh Moran's EC362 Economics of Financial Markets fi
 ## Project Structure
 
 - `index.html`, `client.js`, `styles.css`, `assets/`: static Vercel deployment files.
+- `vercel.json`: forces Vercel to treat the repository as a static site.
 
 ## Run / Build
 
-Vercel serves the root-level static files directly. No build command or serverless function is required for deployment.
+Vercel serves the root-level static files directly through `@vercel/static`. No serverless function is required for deployment.
 
 For local preview, open `index.html` directly in a browser or serve the folder with any static file server.
 
