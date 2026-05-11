@@ -1,9 +1,0 @@
-{
-  "name": "efm-portfolio-options-engine-dashboard",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "build": "node scripts/build-static.mjs",
-    "dev": "node server.mjs"
-  }
-}
