@@ -12,7 +12,7 @@ Standalone dashboard for Darragh Moran's EC362 Economics of Financial Markets fi
 ## Project Structure
 
 - `static/`: browser dashboard.
-- `api/market-data.py`: Vercel-compatible market data endpoint.
+- `api/market-data.js`: Vercel-compatible market data endpoint.
 - `server.mjs`: local development server with the same `/api/market-data` route.
 - `scripts/build-static.mjs`: copies `static/` to `dist/`.
 
