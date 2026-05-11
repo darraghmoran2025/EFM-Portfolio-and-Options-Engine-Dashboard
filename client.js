@@ -1,7 +1,7 @@
 const CAPITAL = 5_000_000;
 const SNAPSHOT_START = "2026-01-02";
 const SNAPSHOT_END = "2026-04-17";
-const MARKET_DATA_ENABLED = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+const MARKET_DATA_ENABLED = true;
 
 const ETFS = [
   { ticker: "VWRL", yahoo: "VWRL.AS", name: "Vanguard FTSE All-World UCITS ETF", bucket: "Core", type: "Broad global equity", ter: 0.0022, allocation: 0.35, geography: "Global - 49 countries", pe: 17.8, stdev: 0.128, fallbackReturn: 0.045, notes: "Single-fund access to developed and emerging market equities." },

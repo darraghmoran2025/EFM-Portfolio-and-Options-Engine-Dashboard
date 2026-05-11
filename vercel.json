@@ -24,9 +24,17 @@
     {
       "src": "assets/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "api/market-data.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/api/market-data",
+      "dest": "/api/market-data.js"
+    },
     {
       "src": "/client.js",
       "dest": "/client.js"
