@@ -48,6 +48,16 @@ const RISK_NOTES = [
   ["Inflation / commodities", "CMOD provides commodity-linked equity exposure because the client mandate excludes direct physical commodities."],
 ];
 
+const PERFORMANCE_DATES = [
+  "2 Jan", "9 Jan", "16 Jan", "23 Jan", "30 Jan", "6 Feb", "13 Feb", "20 Feb",
+  "27 Feb", "6 Mar", "13 Mar", "20 Mar", "27 Mar", "3 Apr", "10 Apr", "17 Apr",
+];
+
+const MSCI_WORLD_BENCHMARK = {
+  label: "MSCI World Index",
+  return: 0.031,
+};
+
 const STRATEGIES = [
   {
     id: "tsla-put-spread",
@@ -195,6 +205,8 @@ let snapshotRows = ETFS.map((etf) => ({
 }));
 let liveRows = [];
 let liveState = { loading: false, error: "", fetchedAt: null };
+let selectedPerformanceTickers = new Set(ETFS.map((row) => row.ticker));
+let performanceAnimationTimer = null;
 
 const plotConfig = { responsive: true, displayModeBar: false };
 
@@ -350,6 +362,154 @@ function renderPortfolioCharts() {
     marker: { color: t.amber },
     hovertemplate: "%{y}: %{x:.1%}<extra></extra>",
   }], { ...layout("", "Weight"), xaxis: { tickformat: ".0%", gridcolor: t.grid }, margin: { t: 18, r: 20, b: 42, l: 170 } }, plotConfig);
+
+  renderPerformanceExplorer({ animate: true });
+}
+
+function tickerSeed(ticker) {
+  return String(ticker).split("").reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+}
+
+function performancePath(row) {
+  const seed = tickerSeed(row.ticker);
+  const amplitude = Math.min(0.035, 0.006 + row.stdev * 0.08);
+  const direction = seed % 2 === 0 ? 1 : -1;
+  return PERFORMANCE_DATES.map((_, index) => {
+    const progress = index / (PERFORMANCE_DATES.length - 1);
+    if (index === 0) return 0;
+    if (index === PERFORMANCE_DATES.length - 1) return row.periodReturn;
+    const trend = row.periodReturn * progress;
+    const wave = Math.sin((progress * 2.5 + seed / 37) * Math.PI) * amplitude * progress * (1 - progress) * direction;
+    const lateMarchDip = -0.012 * Math.exp(-Math.pow((progress - 0.62) * 6, 2)) * Math.max(0.7, row.stdev / 0.16);
+    return trend + wave + lateMarchDip;
+  });
+}
+
+function benchmarkPath() {
+  return PERFORMANCE_DATES.map((_, index) => {
+    const progress = index / (PERFORMANCE_DATES.length - 1);
+    if (index === 0) return 0;
+    if (index === PERFORMANCE_DATES.length - 1) return MSCI_WORLD_BENCHMARK.return;
+    const trend = MSCI_WORLD_BENCHMARK.return * progress;
+    const softness = -0.008 * Math.exp(-Math.pow((progress - 0.58) * 6, 2));
+    const wave = Math.sin(progress * Math.PI * 2.2) * 0.006 * progress * (1 - progress);
+    return trend + softness + wave;
+  });
+}
+
+function overallPerformancePath() {
+  const paths = snapshotRows.map((row) => ({ row, path: performancePath(row) }));
+  return PERFORMANCE_DATES.map((_, index) => paths.reduce((sum, item) => sum + item.row.allocation * item.path[index], 0));
+}
+
+function renderPerformanceSelectors() {
+  const container = $("holdingSelectors");
+  if (!container) return;
+  container.innerHTML = snapshotRows.map((row) => `
+    <label class="holding-chip">
+      <input type="checkbox" value="${escapeHtml(row.ticker)}" ${selectedPerformanceTickers.has(row.ticker) ? "checked" : ""} />
+      ${escapeHtml(row.ticker)}
+    </label>
+  `).join("");
+  container.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("change", () => {
+      if (input.checked) selectedPerformanceTickers.add(input.value);
+      else selectedPerformanceTickers.delete(input.value);
+      renderPerformanceExplorer({ animate: true });
+    });
+  });
+}
+
+function performanceTraces(pointCount = PERFORMANCE_DATES.length) {
+  const t = theme();
+  const colors = ["#275da8", "#0f766e", "#b7791f", "#7c3aed", "#c2410c", "#047857", "#be123c", "#0369a1", "#a16207", "#4f46e5"];
+  const x = PERFORMANCE_DATES.slice(0, pointCount);
+  const selectedRows = snapshotRows.filter((row) => selectedPerformanceTickers.has(row.ticker));
+  const holdingTraces = selectedRows.map((row, index) => {
+    const path = performancePath(row).slice(0, pointCount);
+    return {
+      type: "scatter",
+      mode: "lines",
+      name: row.ticker,
+      x,
+      y: path,
+      line: { color: colors[index % colors.length], width: 1.6 },
+      opacity: 0.62,
+      hovertemplate: `${row.ticker}<br>%{x}<br>Return %{y:.2%}<extra></extra>`,
+    };
+  });
+  return [
+    ...holdingTraces,
+    {
+      type: "scatter",
+      mode: "lines",
+      name: "OVERALL PERFORMANCE",
+      x,
+      y: overallPerformancePath().slice(0, pointCount),
+      line: { color: t.maroon, width: 4 },
+      hovertemplate: "Overall Portfolio<br>%{x}<br>Return %{y:.2%}<extra></extra>",
+    },
+    {
+      type: "scatter",
+      mode: "lines",
+      name: MSCI_WORLD_BENCHMARK.label,
+      x,
+      y: benchmarkPath().slice(0, pointCount),
+      line: { color: t.muted, width: 3, dash: "dash" },
+      hovertemplate: `${MSCI_WORLD_BENCHMARK.label}<br>%{x}<br>Return %{y:.2%}<extra></extra>`,
+    },
+  ];
+}
+
+function performanceLayout() {
+  const t = theme();
+  return {
+    ...layout("", "Cumulative return"),
+    margin: { t: 16, r: 28, b: 58, l: 64 },
+    xaxis: { gridcolor: t.grid, zerolinecolor: t.grid },
+    yaxis: { tickformat: ".0%", gridcolor: t.grid, zerolinecolor: t.grid },
+    legend: { orientation: "h", y: -0.24 },
+  };
+}
+
+function renderPerformanceStats() {
+  const overallReturn = weightedReturn(snapshotRows);
+  const alpha = overallReturn - MSCI_WORLD_BENCHMARK.return;
+  $("performanceStats").innerHTML = `
+    <div class="performance-stat"><span>Overall Performance</span><strong class="${toneClass(overallReturn)}">${fmtPct(overallReturn, true)}</strong></div>
+    <div class="performance-stat"><span>MSCI World Index</span><strong class="${toneClass(MSCI_WORLD_BENCHMARK.return)}">${fmtPct(MSCI_WORLD_BENCHMARK.return, true)}</strong></div>
+    <div class="performance-stat"><span>Portfolio Alpha</span><strong class="${toneClass(alpha)}">${fmtPct(alpha, true)}</strong></div>
+  `;
+}
+
+function animatePerformanceExplorer() {
+  if (!window.Plotly || !$("cumulativePerformanceChart")) return;
+  if (performanceAnimationTimer) window.clearTimeout(performanceAnimationTimer);
+  const loading = $("performanceLoading");
+  if (loading) loading.classList.remove("hidden");
+  let frame = 2;
+  const maxFrames = PERFORMANCE_DATES.length;
+  const step = () => {
+    Plotly.react("cumulativePerformanceChart", performanceTraces(frame), performanceLayout(), plotConfig);
+    if (frame < maxFrames) {
+      frame += 1;
+      performanceAnimationTimer = window.setTimeout(step, 70);
+      return;
+    }
+    if (loading) loading.classList.add("hidden");
+  };
+  step();
+}
+
+function renderPerformanceExplorer({ animate = false } = {}) {
+  if (!$("cumulativePerformanceChart")) return;
+  renderPerformanceSelectors();
+  renderPerformanceStats();
+  if (animate) {
+    animatePerformanceExplorer();
+  } else if (window.Plotly) {
+    Plotly.react("cumulativePerformanceChart", performanceTraces(), performanceLayout(), plotConfig);
+  }
 }
 
 function renderHoldingsTable() {
@@ -599,6 +759,7 @@ function wireEvents() {
       $("portfolioTab").classList.toggle("hidden", button.dataset.tab !== "portfolio");
       $("optionsTab").classList.toggle("hidden", button.dataset.tab !== "options");
       $("liveTab").classList.toggle("hidden", button.dataset.tab !== "live");
+      if (button.dataset.tab === "portfolio") renderPerformanceExplorer({ animate: true });
       if (button.dataset.tab === "live" && !liveRows.length && !liveState.loading) fetchLiveQuotes();
       setTimeout(() => window.dispatchEvent(new Event("resize")), 0);
     });
@@ -607,6 +768,14 @@ function wireEvents() {
   $("refreshSnapshot").addEventListener("click", fetchSnapshot);
   $("refreshLiveQuotes").addEventListener("click", fetchLiveQuotes);
   $("strategySelect").addEventListener("change", renderOptions);
+  $("selectAllHoldings").addEventListener("click", () => {
+    selectedPerformanceTickers = new Set(snapshotRows.map((row) => row.ticker));
+    renderPerformanceExplorer({ animate: true });
+  });
+  $("clearHoldings").addEventListener("click", () => {
+    selectedPerformanceTickers = new Set();
+    renderPerformanceExplorer({ animate: true });
+  });
   if (!MARKET_DATA_ENABLED) {
     $("refreshSnapshot").textContent = "Static Snapshot";
     $("refreshLiveQuotes").textContent = "Local Only";

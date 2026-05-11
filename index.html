@@ -101,6 +101,24 @@
             </div>
             <div id="performanceChart" class="chart chart-short"></div>
           </section>
+          <section class="panel wide">
+            <div class="panel-heading performance-heading">
+              <div>
+                <h2>YTD Performance Explorer</h2>
+                <p class="subhead">Select holdings to compare against the overall portfolio and MSCI World Index benchmark.</p>
+              </div>
+              <div class="performance-actions">
+                <button id="selectAllHoldings" type="button">Select All</button>
+                <button id="clearHoldings" type="button">Clear</button>
+              </div>
+            </div>
+            <div id="holdingSelectors" class="holding-selectors" aria-label="Select ETF holdings"></div>
+            <div class="performance-stage">
+              <div id="cumulativePerformanceChart" class="chart"></div>
+              <div id="performanceLoading" class="performance-loading hidden">Loading performance...</div>
+            </div>
+            <div id="performanceStats" class="performance-stats"></div>
+          </section>
           <section class="panel">
             <h2>Geographic Exposure</h2>
             <div id="geoChart" class="chart chart-short"></div>
