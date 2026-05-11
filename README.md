@@ -13,7 +13,7 @@ Standalone dashboard for Darragh Moran's EC362 Economics of Financial Markets fi
 
 - `static/`: browser dashboard.
 - `api/market-data.py`: Vercel-compatible market data endpoint.
-- `app.py`: ASGI static app plus local/deployed market-data endpoint.
+- `server.mjs`: local development server with the same `/api/market-data` route.
 - `scripts/build-static.mjs`: copies `static/` to `dist/`.
 
 ## Run / Build
@@ -24,4 +24,12 @@ npm run build
 
 The static build is written to `dist/`.
 
-For a backend-enabled local preview, serve `app.py` with an ASGI server such as Uvicorn. The dashboard will still render without the backend, but the historical refresh and Live Mode will use embedded fallback values until `/api/market-data` is available.
+For a backend-enabled local preview:
+
+```powershell
+npm run dev
+```
+
+Then open `http://localhost:5177`.
+
+The dashboard will still render without the backend, but the historical refresh and Live Mode will use embedded fallback values until `/api/market-data` is available.
