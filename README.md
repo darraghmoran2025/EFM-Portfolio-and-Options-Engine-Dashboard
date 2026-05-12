@@ -1,4 +1,4 @@
-# EFM Portfolio and Options Engine Dashboard
+# EFM Portfolio Dashboard
 
 Standalone dashboard for Darragh Moran's EC362 Economics of Financial Markets final assessment.
 
@@ -6,7 +6,6 @@ Standalone dashboard for Darragh Moran's EC362 Economics of Financial Markets fi
 
 - Fixed Q2 ETF portfolio dashboard using the allocation from `Q2 ETF Portfolio.xlsx`.
 - YTD performance view for the period ending 17 April 2026.
-- Q5 options pricing tab using the project strategy inputs: TSLA and NVDA strategies, strikes, premiums, expiries, implied volatility assumptions and payoff tables.
 - Live Mode for current ETF prices using a Yahoo Finance chart proxy.
 
 ## Project Structure

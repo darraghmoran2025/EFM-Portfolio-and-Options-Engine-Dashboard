@@ -58,144 +58,6 @@ const MSCI_WORLD_BENCHMARK = {
   return: 0.031,
 };
 
-const STRATEGIES = [
-  {
-    id: "tsla-put-spread",
-    title: "TSLA Bull Put Spread",
-    underlying: "TSLA",
-    spot: 400.62,
-    date: "18 Apr 2026",
-    expiry: "15 May 2026",
-    iv: "68%",
-    thesis: "Moderately bullish or neutral view into TSLA earnings risk.",
-    maxProfit: "$13.28/share ($1,328/contract)",
-    maxLoss: "$16.72/share ($1,672/contract)",
-    breakeven: "$386.72",
-    range: [310, 450],
-    rows: [310, 330, 350, 360, 370, 375, 380, 385, 387, 390, 395, 400, 405, 410, 420, 430, 450],
-    legs: [
-      { action: "Buy", type: "Put", strike: 370, premium: 15.23, qty: 1 },
-      { action: "Sell", type: "Put", strike: 400, premium: 28.51, qty: 1 },
-    ],
-  },
-  {
-    id: "tsla-butterfly",
-    title: "TSLA Long Call Butterfly",
-    underlying: "TSLA",
-    spot: 400.62,
-    date: "18 Apr 2026",
-    expiry: "15 May 2026",
-    iv: "68%",
-    thesis: "Range-bound / low-volatility view where TSLA finishes near $400.",
-    maxProfit: "$25.23/share ($2,523/contract)",
-    maxLoss: "$4.77/share ($477/contract)",
-    breakeven: "$374.77 / $425.23",
-    range: [310, 465],
-    rows: [310, 340, 370, 375, 380, 385, 390, 395, 400, 405, 410, 415, 420, 425, 430, 445, 465],
-    legs: [
-      { action: "Buy", type: "Call", strike: 370, premium: 47.02, qty: 1 },
-      { action: "Sell", type: "Call", strike: 400, premium: 30.40, qty: 2 },
-      { action: "Buy", type: "Call", strike: 430, premium: 18.55, qty: 1 },
-    ],
-  },
-  {
-    id: "tsla-strangle",
-    title: "TSLA Long Strangle",
-    underlying: "TSLA",
-    spot: 400.62,
-    date: "18 Apr 2026",
-    expiry: "15 May 2026",
-    iv: "68%",
-    thesis: "High-volatility view around TSLA earnings, with direction uncertain.",
-    maxProfit: "Unlimited upside / substantial downside",
-    maxLoss: "$22.03/share ($2,203/contract)",
-    breakeven: "$327.97 / $472.03",
-    range: [270, 520],
-    rows: [270, 290, 310, 328, 345, 360, 372, 380, 390, 400, 410, 422, 432, 440, 450, 465, 480, 500, 520],
-    legs: [
-      { action: "Buy", type: "Put", strike: 350, premium: 9.08, qty: 1 },
-      { action: "Buy", type: "Call", strike: 450, premium: 12.95, qty: 1 },
-    ],
-  },
-  {
-    id: "nvda-condor",
-    title: "NVDA Short Iron Condor",
-    underlying: "NVDA",
-    spot: 201.68,
-    date: "18 Apr 2026",
-    expiry: "15 May 2026",
-    iv: "52%",
-    thesis: "Stable-price strategy: NVDA consolidates below its October 2025 peak.",
-    maxProfit: "$7.31/share ($731/contract)",
-    maxLoss: "$7.69/share ($769/contract)",
-    breakeven: "$182.69 / $222.31",
-    range: [150, 248],
-    rows: [150, 162, 175, 182, 185, 190, 195, 200, 205, 210, 215, 220, 222, 225, 230, 238, 248],
-    legs: [
-      { action: "Sell", type: "Put", strike: 190, premium: 5.95, qty: 1 },
-      { action: "Buy", type: "Put", strike: 175, premium: 2.10, qty: 1 },
-      { action: "Sell", type: "Call", strike: 215, premium: 6.47, qty: 1 },
-      { action: "Buy", type: "Call", strike: 230, premium: 3.01, qty: 1 },
-    ],
-  },
-  {
-    id: "nvda-straddle",
-    title: "NVDA Long Straddle",
-    underlying: "NVDA",
-    spot: 201.68,
-    date: "18 Apr 2026",
-    expiry: "15 May 2026",
-    iv: "52%",
-    thesis: "High-volatility strategy for a large NVDA move with direction unknown.",
-    maxProfit: "Unlimited upside / substantial downside",
-    maxLoss: "$22.68/share ($2,268/contract)",
-    breakeven: "$177.32 / $222.68",
-    range: [155, 260],
-    rows: [155, 165, 177, 182, 185, 190, 195, 200, 205, 210, 215, 220, 222, 228, 235, 248, 260],
-    legs: [
-      { action: "Buy", type: "Put", strike: 200, premium: 10.18, qty: 1 },
-      { action: "Buy", type: "Call", strike: 200, premium: 12.50, qty: 1 },
-    ],
-  },
-  {
-    id: "nvda-long-call",
-    title: "NVDA Long Call",
-    underlying: "NVDA",
-    spot: 201.68,
-    date: "18 Apr 2026",
-    expiry: "15 May 2026",
-    iv: "52%",
-    thesis: "Novice bullish strategy using the $210 out-of-the-money call.",
-    maxProfit: "Unlimited",
-    maxLoss: "$8.16/share ($816/contract)",
-    breakeven: "$218.16",
-    range: [160, 260],
-    rows: [160, 180, 200, 210, 218, 225, 240, 260],
-    legs: [
-      { action: "Buy", type: "Call", strike: 210, premium: 8.16, qty: 1 },
-    ],
-  },
-  {
-    id: "nvda-bull-call",
-    title: "NVDA Bull Call Spread",
-    underlying: "NVDA",
-    spot: 201.68,
-    date: "18 Apr 2026",
-    expiry: "15 May 2026",
-    iv: "52%",
-    thesis: "Intermediate bullish strategy with lower cost and capped upside.",
-    maxProfit: "$8.97/share ($897/contract)",
-    maxLoss: "$6.03/share ($603/contract)",
-    breakeven: "$206.03",
-    range: [160, 250],
-    rows: [160, 180, 200, 206, 210, 215, 225, 250],
-    legs: [
-      { action: "Buy", type: "Call", strike: 200, premium: 12.50, qty: 1 },
-      { action: "Sell", type: "Call", strike: 215, premium: 6.47, qty: 1 },
-    ],
-  },
-];
-
 let snapshotRows = ETFS.map((etf) => ({
   ...etf,
   source: "Embedded snapshot",
@@ -582,97 +444,6 @@ async function fetchSnapshot() {
   renderPortfolio();
 }
 
-function intrinsic(type, strike, price) {
-  return type === "Call" ? Math.max(price - strike, 0) : Math.max(strike - price, 0);
-}
-
-function legPayoff(leg, price) {
-  const optionValue = intrinsic(leg.type, leg.strike, price);
-  const signed = leg.action === "Buy" ? optionValue - leg.premium : leg.premium - optionValue;
-  return signed * leg.qty;
-}
-
-function strategyPayoff(strategy, price) {
-  return strategy.legs.reduce((sum, leg) => sum + legPayoff(leg, price), 0);
-}
-
-function strategyEntryCashflow(strategy) {
-  return strategy.legs.reduce((sum, leg) => sum + (leg.action === "Sell" ? leg.premium : -leg.premium) * leg.qty, 0);
-}
-
-function renderOptions() {
-  const selected = STRATEGIES.find((item) => item.id === $("strategySelect").value) || STRATEGIES[0];
-  const cashflow = strategyEntryCashflow(selected);
-  $("netPremium").textContent = `${cashflow >= 0 ? "Credit" : "Debit"} ${fmtUsd(Math.abs(cashflow))}/share`;
-  $("maxProfit").textContent = selected.maxProfit;
-  $("maxLoss").textContent = selected.maxLoss;
-  $("breakeven").textContent = selected.breakeven;
-  $("strategySummary").innerHTML = `
-    <article class="strategy-card"><span>Underlying</span><strong>${selected.underlying} at ${fmtUsd(selected.spot)}</strong><p>Valuation date ${selected.date}; expiry ${selected.expiry}; implied volatility ${selected.iv}.</p></article>
-    <article class="strategy-card"><span>Market View</span><strong>${escapeHtml(selected.title)}</strong><p>${escapeHtml(selected.thesis)}</p></article>
-    <article class="strategy-card"><span>Contract Basis</span><strong>Per share and per 100-share contract</strong><p>Premiums, strikes and strategy structures are fixed to the Q5 project tables.</p></article>
-  `;
-  renderLegsTable(selected);
-  renderPayoff(selected);
-}
-
-function renderLegsTable(strategy) {
-  $("legsTable").innerHTML = `
-    <thead><tr><th>Action</th><th>Type</th><th>Strike</th><th>Premium</th><th>Quantity</th><th>Entry Cashflow</th></tr></thead>
-    <tbody>${strategy.legs.map((leg) => {
-      const cashflow = (leg.action === "Sell" ? leg.premium : -leg.premium) * leg.qty;
-      return `
-        <tr>
-          <td>${leg.action}</td>
-          <td>${leg.type}</td>
-          <td>${fmtUsd(leg.strike)}</td>
-          <td>${fmtUsd(leg.premium)}</td>
-          <td>${leg.qty}</td>
-          <td class="${toneClass(cashflow)}">${cashflow >= 0 ? "+" : "-"}${fmtUsd(Math.abs(cashflow))}</td>
-        </tr>`;
-    }).join("")}</tbody>
-  `;
-}
-
-function renderPayoff(strategy) {
-  if (!window.Plotly) return;
-  const t = theme();
-  const [min, max] = strategy.range;
-  const prices = Array.from({ length: 181 }, (_, index) => min + ((max - min) * index) / 180);
-  const payoffs = prices.map((price) => strategyPayoff(strategy, price));
-  Plotly.react("payoffChart", [{
-    type: "scatter",
-    mode: "lines",
-    name: "Expiry P/L",
-    x: prices,
-    y: payoffs,
-    line: { color: t.teal, width: 3 },
-    hovertemplate: "Underlying %{x:$,.2f}<br>P/L %{y:$,.2f}<extra></extra>",
-  }], {
-    ...layout("", "P/L per share"),
-    xaxis: { title: "Underlying price at expiry", gridcolor: t.grid },
-    shapes: [
-      { type: "line", xref: "paper", x0: 0, x1: 1, y0: 0, y1: 0, line: { color: t.muted } },
-      { type: "line", yref: "paper", y0: 0, y1: 1, x0: strategy.spot, x1: strategy.spot, line: { color: t.maroon, dash: "dot" } },
-    ],
-  }, plotConfig);
-
-  $("payoffTable").innerHTML = `
-    <thead><tr><th>${strategy.underlying} Price at Expiry</th><th>Net P/L per Share</th><th>Net P/L per Contract</th><th>Zone</th></tr></thead>
-    <tbody>${strategy.rows.map((price) => {
-      const payoff = strategyPayoff(strategy, price);
-      const zone = Math.abs(payoff) < 0.5 ? "Breakeven area" : payoff > 0 ? "Profit" : "Loss";
-      return `
-        <tr>
-          <td>${fmtUsd(price)}</td>
-          <td class="${toneClass(payoff)}">${payoff >= 0 ? "+" : "-"}${fmtUsd(Math.abs(payoff))}</td>
-          <td class="${toneClass(payoff)}">${payoff >= 0 ? "+" : "-"}${fmtUsd(Math.abs(payoff * 100))}</td>
-          <td>${zone}</td>
-        </tr>`;
-    }).join("")}</tbody>
-  `;
-}
-
 async function fetchLiveQuotes() {
   if (!MARKET_DATA_ENABLED) {
     liveState = {
@@ -748,7 +519,6 @@ function wireEvents() {
     localStorage.setItem("efm-theme", isDarkMode() ? "dark" : "light");
     $("themeToggle").textContent = isDarkMode() ? "Day mode" : "Night mode";
     renderPortfolio();
-    renderOptions();
     renderLiveMode();
   });
 
@@ -757,7 +527,6 @@ function wireEvents() {
       document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
       button.classList.add("active");
       $("portfolioTab").classList.toggle("hidden", button.dataset.tab !== "portfolio");
-      $("optionsTab").classList.toggle("hidden", button.dataset.tab !== "options");
       $("liveTab").classList.toggle("hidden", button.dataset.tab !== "live");
       if (button.dataset.tab === "portfolio") renderPerformanceExplorer({ animate: true });
       if (button.dataset.tab === "live" && !liveRows.length && !liveState.loading) fetchLiveQuotes();
@@ -767,7 +536,6 @@ function wireEvents() {
 
   $("refreshSnapshot").addEventListener("click", fetchSnapshot);
   $("refreshLiveQuotes").addEventListener("click", fetchLiveQuotes);
-  $("strategySelect").addEventListener("change", renderOptions);
   $("selectAllHoldings").addEventListener("click", () => {
     selectedPerformanceTickers = new Set(snapshotRows.map((row) => row.ticker));
     renderPerformanceExplorer({ animate: true });
@@ -783,10 +551,8 @@ function wireEvents() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  $("strategySelect").innerHTML = STRATEGIES.map((strategy) => `<option value="${strategy.id}">${strategy.title}</option>`).join("");
   wireEvents();
   renderPortfolio();
-  renderOptions();
   renderLiveMode();
   if (MARKET_DATA_ENABLED) fetchSnapshot();
 });

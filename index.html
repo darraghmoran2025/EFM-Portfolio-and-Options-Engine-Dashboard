@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EFM Portfolio and Options Engine Dashboard</title>
+    <title>EFM Portfolio Dashboard</title>
     <meta
       name="description"
-      content="EC362 Economics of Financial Markets portfolio dashboard, options pricing engine, and live ETF monitor."
+      content="EC362 Economics of Financial Markets portfolio dashboard and live ETF monitor."
     />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,8 +25,8 @@
         <img class="brand-logo" src="/assets/ug-smf-logo.png" alt="University of Galway Student Managed Fund" />
         <div>
           <p class="eyebrow">EC362 Economics of Financial Markets</p>
-          <h1>EFM Portfolio and Options Engine Dashboard</h1>
-          <p class="subbrand">Q2 ETF Portfolio | Q5 Options Pricing | Live ETF Mode</p>
+          <h1>EFM Portfolio Dashboard</h1>
+          <p class="subbrand">Q2 ETF Portfolio | Live ETF Mode</p>
         </div>
       </div>
       <button id="themeToggle" class="theme-toggle" type="button">Night mode</button>
@@ -54,7 +54,6 @@
 
       <nav class="tabs" aria-label="Dashboard sections">
         <button class="tab active" data-tab="portfolio">Portfolio Dashboard</button>
-        <button class="tab" data-tab="options">Options Pricing</button>
         <button class="tab" data-tab="live">Live Mode</button>
       </nav>
 
@@ -137,55 +136,6 @@
             <h2>Risk Notes</h2>
             <div id="riskNotes" class="risk-notes"></div>
           </section>
-        </section>
-      </section>
-
-      <section id="optionsTab" class="tab-panel hidden">
-        <section class="panel wide">
-          <div class="panel-heading">
-            <div>
-              <h2>Q5 Options Pricing Engine</h2>
-              <p class="subhead">The selectable strategies use only the Q5 project strikes, premiums, dates and assumptions.</p>
-            </div>
-            <select id="strategySelect" aria-label="Select option strategy"></select>
-          </div>
-          <div id="strategySummary" class="strategy-summary"></div>
-        </section>
-
-        <section class="metrics" aria-label="Options summary">
-          <div class="metric">
-            <span>Net Premium</span>
-            <strong id="netPremium">--</strong>
-          </div>
-          <div class="metric">
-            <span>Maximum Profit</span>
-            <strong id="maxProfit">--</strong>
-          </div>
-          <div class="metric">
-            <span>Maximum Loss</span>
-            <strong id="maxLoss">--</strong>
-          </div>
-          <div class="metric">
-            <span>Break-even</span>
-            <strong id="breakeven">--</strong>
-          </div>
-        </section>
-
-        <section class="panel wide">
-          <h2>Strategy Legs</h2>
-          <div class="table-wrap">
-            <table id="legsTable"></table>
-          </div>
-        </section>
-        <section class="panel wide">
-          <h2>Payoff at Expiry</h2>
-          <div id="payoffChart" class="chart"></div>
-        </section>
-        <section class="panel wide">
-          <h2>Pricing Table</h2>
-          <div class="table-wrap">
-            <table id="payoffTable"></table>
-          </div>
         </section>
       </section>
 

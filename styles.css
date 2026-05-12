@@ -169,8 +169,7 @@ button:active {
 }
 
 .metric span,
-.brief-card span,
-.strategy-card span {
+.brief-card span {
   color: var(--muted);
   display: block;
   font-size: 0.76rem;
@@ -227,38 +226,33 @@ button:active {
 }
 
 .brief-grid,
-.risk-notes,
-.strategy-summary {
+.risk-notes {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .brief-card,
-.risk-note,
-.strategy-card {
+.risk-note {
   padding: 16px;
 }
 
 .brief-card strong,
-.risk-note strong,
-.strategy-card strong {
+.risk-note strong {
   display: block;
   font-size: 1.03rem;
   margin-bottom: 6px;
 }
 
 .brief-card p,
-.risk-note p,
-.strategy-card p {
+.risk-note p {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.45;
   margin: 0;
 }
 
-.risk-note,
-.strategy-card {
+.risk-note {
   background: var(--bg);
   border: 1px solid var(--line);
   border-left: 3px solid var(--maroon);
@@ -503,7 +497,6 @@ a:hover {
   .brief-grid,
   .dashboard-grid,
   .risk-notes,
-  .strategy-summary,
   .performance-stats {
     grid-template-columns: 1fr;
   }
